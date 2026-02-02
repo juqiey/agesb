@@ -54,7 +54,7 @@
 <div class="header">
     <table class="header-table">
         <tr>
-            <td style="width:80px;"><img src="{{ public_path('img/tksb_logo.png') }}" class="logo" alt="Logo"></td>
+            <td style="width:80px;"><img src="{{ public_path('img/agesb_logo.png') }}" class="logo" alt="Logo"></td>
             <td class="title">SSR Report</td>
             <td class="report-info">
                 <div><strong>Generated:</strong> {{ now()->format('d M Y, H:i') }}</div>

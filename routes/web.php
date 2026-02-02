@@ -3,6 +3,7 @@
 use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InfoUserController;
+use App\Http\Controllers\PurchaseRequestController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ResetController;
 use App\Http\Controllers\SessionsController;
@@ -80,6 +81,46 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/verify',[SsrController::class, 'verifyIndex'])->name('verify.index');
         Route::get('/verify/edit/{ssr}', [SsrController::class, 'verifyEdit'])->name('verify.edit');
         Route::put('/verify/update/{ssr}', [SsrController::class, 'verifyUpdate'])->name('verify.update');
+        Route::get('/verify/show/{ssr}', [SsrController::class, 'verifyShow'])->name('verify.show');
+
+        //SSR->Approval routes here
+        Route::get('/approve',[SsrController::class, 'approveIndex'])->name('approve.index');
+        Route::get('/approve/edit/{ssr}', [SsrController::class, 'approveEdit'])->name('approve.edit');
+        Route::put('/approve/update/{ssr}', [SsrController::class, 'approveUpdate'])->name('approve.update');
+        Route::get('/approve/show/{ssr}', [SsrController::class, 'approveShow'])->name('approve.show');
+
+        //SSR->Export pdf routes here
+        Route::get('/report/export/{ssr}',[SsrController::class, 'exportReport'])->name('report.export');
+        Route::get('/report',[SsrController::class, 'reportIndex'])->name('report.index');
+        Route::get('/report/summary', [SsrController::class, 'exportSummary'])->name('report.summary');
+    });
+
+    Route::prefix('pr')->name('pr.')->group(function(){
+        //PR->Request routes here
+        Route::get('/request', [PurchaseRequestController::class, 'index'])->name('request.index');
+        Route::get('/request/create',[PurchaseRequestController::class, 'create'])->name('request.create');
+        Route::post('/request/store/', [PurchaseRequestController::class, 'store'])->name('request.store');
+        Route::get('/request/edit/{pr}',[PurchaseRequestController::class, 'edit'])->name('request.edit');
+        Route::put('/request/update/{pr}', [PurchaseRequestController::class, 'update'])->name('request.update');
+        Route::get('/request/show/{pr}', [PurchaseRequestController::class, 'show'])->name('request.show');
+
+
+        //PR->Confirm routes here
+        Route::get('/confirm', [PurchaseRequestController::class, 'confirmIndex'])->name('confirm.index');
+        Route::get('/confirm/edit/{pr}', [PurchaseRequestController::class, 'confirmEdit'])->name('confirm.edit');
+        Route::put('/confirm/update/{pr}', [PurchaseRequestController::class, 'confirmUpdate'])->name('confirm.update');
+        Route::get('/confirm/show/{pr}', [PurchaseRequestController::class, 'show'])->name('confirm.show');
+
+
+        //PR->Approve routes here
+        Route::get('/approve', [PurchaseRequestController::class, 'approveIndex'])->name('approve.index');
+        Route::get('/approve/edit/{pr}', [PurchaseRequestController::class, 'approveEdit'])->name('approve.edit');
+        Route::put('/approve/update/{pr}', [PurchaseRequestController::class, 'approveUpdate'])->name('approve.update');
+
+        //PR->Report routes here
+        Route::get('/report', [PurchaseRequestController::class, 'reportIndex'])->name('report.index');
+        Route::get('/report/export/{pr}', [PurchaseRequestController::class, 'exportReport'])->name('report.export');
+        Route::get('/report/summary', [PurchaseRequestController::class, 'exportSummary'])->name('report.summary');
     });
 });
 

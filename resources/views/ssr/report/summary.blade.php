@@ -5,7 +5,7 @@
     <title>SSR Summary Report</title>
     <style>
         @page { size: A4 landscape; margin: 20px; }
-        body { font-family: DejaVu Sans, sans-serif; font-size: 11px; margin:0; padding:0; }
+        body { font-family: Arial, Helvetica, sans-serif; font-size: 11px; margin:0; padding:0; }
         table { width:100%; border-collapse: collapse; margin-bottom:10px; }
         th, td { padding: 5px; text-align: left; vertical-align: top; border: 1px solid #444; }
         th { background-color: #f2f2f2; text-transform: uppercase; font-size:12px; }
@@ -27,7 +27,7 @@
 <!-- HEADER -->
 <table class="header-table">
     <tr>
-        <td style="width:80px;"><img src="{{ public_path('img/tksb_logo.png') }}" class="logo"></td>
+        <td style="width:80px;"><img src="{{ public_path('img/agesb_logo.png') }}" class="logo"></td>
         <td class="title">SSR Summary Report</td>
         <td style="text-align:center; font-size:12px;">
             Generated: {{ now()->format('d M Y, H:i') }}<br>

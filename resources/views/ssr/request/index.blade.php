@@ -141,6 +141,9 @@
                                                             <a href="{{ route('ssr.request.edit', $ssr) }}" class="dropdown-item" type="button">Update</a>
                                                         </li>
                                                         <li>
+                                                            <a href="{{ route('ssr.report.export', $ssr) }}" class="dropdown-item" type="button">Print</a>
+                                                        </li>
+                                                        <li>
                                                             <button class="dropdown-item text-danger" type="button">Delete</button>
                                                         </li>
                                                         <li>

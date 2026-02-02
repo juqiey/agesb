@@ -8,4 +8,23 @@ use Illuminate\Database\Eloquent\Model;
 class PrItem extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'description',
+        'quantity',
+        'unit',
+        'remark',
+        'pr_id',
+        'status',
+        'doc_url',
+        'do_id',
+        'unit_price',
+        'total_price',
+        'quantity_pro'
+    ];
+
+    public function delivery_orders(){
+        return $this->belongsTo(DeliveryOrder::class, 'do_id','id');
+    }
+
 }
