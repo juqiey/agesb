@@ -8,6 +8,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ResetController;
 use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\SsrController;
+use App\Http\Controllers\SsaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
@@ -95,6 +96,33 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/report/summary', [SsrController::class, 'exportSummary'])->name('report.summary');
     });
 
+    Route::prefix('ssa')->name('ssa.')->group(function(){
+        //SSA->Request routes here
+        Route::get('/request',[SsaController::class,'index'])->name('request.index');
+        Route::get('/request/create',[SsaController::class,'create'])->name('request.create');
+        Route::post('/request/store',[SsaController::class, 'store'])->name('request.store');
+        Route::get('/request/edit/{ssa}', [SsaController::class, 'edit'])->name('request.edit');
+        Route::put('/request/update/{ssa}',[SsaController::class, 'update'])->name('request.update');
+        Route::get('/request/show/{ssa}', [SsaController::class, 'show'])->name('request.show');
+
+        //SSR->Verification routes here
+        Route::get('/verify',[SsaController::class, 'verifyIndex'])->name('verify.index');
+        Route::get('/verify/edit/{ssa}', [SsaController::class, 'verifyEdit'])->name('verify.edit');
+        Route::put('/verify/update/{ssa}', [SsaController::class, 'verifyUpdate'])->name('verify.update');
+        Route::get('/verify/show/{ssa}', [SsaController::class, 'verifyShow'])->name('verify.show');
+
+        //SSR->Approval routes here
+        Route::get('/approve',[SsaController::class, 'approveIndex'])->name('approve.index');
+        Route::get('/approve/edit/{ssa}', [SsaController::class, 'approveEdit'])->name('approve.edit');
+        Route::put('/approve/update/{ssa}', [SsaController::class, 'approveUpdate'])->name('approve.update');
+        Route::get('/approve/show/{ssa}', [SsaController::class, 'approveShow'])->name('approve.show');
+
+        //SSR->Export pdf routes here
+        Route::get('/report/export/{ssa}',[SsaController::class, 'exportReport'])->name('report.export');
+        Route::get('/report',[SsaController::class, 'reportIndex'])->name('report.index');
+        Route::get('/report/summary', [SsaController::class, 'exportSummary'])->name('report.summary');
+    });
+
     Route::prefix('pr')->name('pr.')->group(function(){
         //PR->Request routes here
         Route::get('/request', [PurchaseRequestController::class, 'index'])->name('request.index');
@@ -123,8 +151,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/report/summary', [PurchaseRequestController::class, 'exportSummary'])->name('report.summary');
     });
 });
-
-
 
 Route::group(['middleware' => 'guest'], function () {
     Route::get('/register', [RegisterController::class, 'create']);
