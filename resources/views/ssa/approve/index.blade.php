@@ -3,5 +3,3 @@
 @section('title', 'SSA Approve')
 
 @section('content')
-
-ss
