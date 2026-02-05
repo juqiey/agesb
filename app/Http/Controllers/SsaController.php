@@ -206,6 +206,7 @@ class SsaController extends Controller
         ]);
     }
 
+    //update
     public function update(Request $request, Ssa $ssa)
     {
         $validated = $request->validate([
