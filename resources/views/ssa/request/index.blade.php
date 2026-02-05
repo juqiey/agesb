@@ -11,7 +11,7 @@
                     <div class="card">
                         <div class="card-header mb-4 pb-0 d-flex justify-content-between align-items-center">
                             <h6>Ship Store Assistance</h6>
-                            <a href="{{ route('ssr.request.create', ['vessel' => request('vessel')]) }}"
+                            <a href="{{ route('ssa.request.create', ['vessel' => request('vessel')]) }}"
                                 class="btn btn-sm btn-primary">
                                 <i class="fa-solid fa-plus"></i> Add New
                             </a>
