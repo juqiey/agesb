@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ChangePasswordController;
+use App\Http\Controllers\DeliveryOrderController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InfoUserController;
 use App\Http\Controllers\PurchaseRequestController;
@@ -149,6 +150,28 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/report', [PurchaseRequestController::class, 'reportIndex'])->name('report.index');
         Route::get('/report/export/{pr}', [PurchaseRequestController::class, 'exportReport'])->name('report.export');
         Route::get('/report/summary', [PurchaseRequestController::class, 'exportSummary'])->name('report.summary');
+    });
+
+    Route::prefix('pro')->name('pro.')->group(function(){
+        //PR Routes here
+        Route::get('/pr', [PurchaseRequestController::class, 'proIndex'])->name('pr.index');
+        Route::get('/pr/show/{pr}', [PurchaseRequestController::class, 'show'])->name('pr.show');
+        Route::get('/pr/edit/{pr}', [PurchaseRequestController::class, 'proEdit'])->name('pr.edit');
+        Route::put('/pr/update/{pr}', [PurchaseRequestController::class, 'proUpdate'])->name('pr.update');
+
+        //SSR Routes here
+        Route::get('/ssr', [SsrController::class, 'proIndex'])->name('ssr.index');
+        Route::get('/ssr/show/{ssr}', [SsrController::class, 'show'])->name('ssr.show');
+        Route::get('/ssr/edit/{ssr}', [SsrController::class, 'proEdit'])->name('ssr.edit');
+        Route::put('/ssr/update/{ssr}', [SsrController::class, 'proUpdate'])->name('ssr.update');
+
+        Route::get('/do', [DeliveryOrderController::class, 'index'])->name('do.index');
+        Route::get('/do/create', [DeliveryOrderController::class, 'create'])->name('do.create');
+        Route::get('/do/pr_items/{id}', [DeliveryOrderController::class, 'getPRItems'])->name('do.pr_items');
+        Route::get('/do/ssr_items/{id}', [DeliveryOrderController::class, 'getSsrItems'])->name('do.ssr_items');
+        Route::post('/do/store', [DeliveryOrderController::class, 'store'])->name('do.store');
+        Route::get('/do/show/{do}', [DeliveryOrderController::class, 'show'])->name('do.show');
+        Route::get('/do/report/{do}', [DeliveryOrderController::class, 'exportReport'])->name('do.report');
     });
 });
 

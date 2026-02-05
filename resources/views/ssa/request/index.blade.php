@@ -11,7 +11,7 @@
                     <div class="card">
                         <div class="card-header mb-4 pb-0 d-flex justify-content-between align-items-center">
                             <h6>Ship Store Assistance</h6>
-                            <a href="{{ route('ssr.request.create', ['vessel' => request('vessel')]) }}"
+                            <a href="{{ route('ssa.request.create', ['vessel' => request('vessel')]) }}"
                                 class="btn btn-sm btn-primary">
                                 <i class="fa-solid fa-plus"></i> Add New
                             </a>
@@ -30,7 +30,7 @@
 
                                 <li class="nav-item">
                                     <a class="nav-link {{ empty($selectedVessel) ? 'active' : '' }}"
-                                        href="{{ route('ssr.request.index') }}">
+                                        href="{{ route('ssa.request.index') }}">
                                         All
                                     </a>
                                 </li>
@@ -38,7 +38,7 @@
                                 @foreach ($vessels as $code => $name)
                                     <li class="nav-item">
                                         <a class="nav-link {{ $selectedVessel == $code ? 'active' : '' }}"
-                                            href="{{ route('ssr.request.index', ['vessel' => $code]) }}">
+                                            href="{{ route('ssa.request.index', ['vessel' => $code]) }}">
                                             {{ $name }}
                                         </a>
                                     </li>
@@ -64,54 +64,54 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($ssrs as $ssr)
+                                        @foreach ($ssas as $ssa)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $ssr->ssr_no }}</td>
-                                                <td>{{ $ssr->date }}</td>
-                                                <td>{{ $ssr->vessel }}</td>
-                                                <td>{{ $ssr->location }}</td>
-                                                <td>{{ $ssr->item }}</td>
+                                                <td>{{ $ssa->ssa_no }}</td>
+                                                <td>{{ $ssa->date }}</td>
+                                                <td>{{ $ssa->vessel }}</td>
+                                                <td>{{ $ssa->location }}</td>
+                                                <td>{{ $ssa->item }}</td>
                                                 <td>
-                                                    @if ($ssr->verified_status === 'PENDING')
+                                                    @if ($ssa->verified_status === 'PENDING')
                                                         <span class="badge bg-warning text-white">PENDING</span>
-                                                    @elseif($ssr->verified_status === 'VERIFIED')
+                                                    @elseif($ssa->verified_status === 'VERIFIED')
                                                         <span class="badge bg-success">VERIFIED</span>
                                                     @else
-                                                        <span class="badge bg-secondary">{{ $ssr->verified_status }}</span>
+                                                        <span class="badge bg-secondary">{{ $ssa->verified_status }}</span>
                                                     @endif
 
                                                     {{-- Remark under badge --}}
-                                                    @if (!empty($ssr->verified_remark))
+                                                    @if (!empty($ssa->verified_remark))
                                                         <div class="text-muted small mt-1">
-                                                            Remark: {{ $ssr->verified_remark }}
+                                                            Remark: {{ $ssa->verified_remark }}
                                                         </div>
                                                     @endif
                                                 </td>
 
                                                 <td>
-                                                    @if ($ssr->approved_status === 'PENDING')
+                                                    @if ($ssa->approved_status === 'PENDING')
                                                         <span class="badge bg-warning text-white">PENDING</span>
-                                                    @elseif($ssr->approved_status === 'APPROVED')
+                                                    @elseif($ssa->approved_status === 'APPROVED')
                                                         <span class="badge bg-success">APPROVED</span>
                                                     @else
-                                                        <span class="badge bg-secondary">{{ $ssr->approved_status }}</span>
+                                                        <span class="badge bg-secondary">{{ $ssa->approved_status }}</span>
                                                     @endif
 
                                                     {{-- Remark under badge --}}
-                                                    @if (!empty($ssr->approved_remark))
+                                                    @if (!empty($ssa->approved_remark))
                                                         <div class="text-muted small mt-1">
-                                                            Remark: {{ $ssr->approved_remark }}
+                                                            Remark: {{ $ssa->approved_remark }}
                                                         </div>
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    @if ($ssr->pro_status === 'PENDING')
+                                                    @if ($ssa->pro_status === 'PENDING')
                                                         <span class="badge bg-warning text-white">PENDING</span>
-                                                    @elseif($ssr->pro_status === 'APPROVED')
+                                                    @elseif($ssa->pro_status === 'APPROVED')
                                                         <span class="badge bg-success">APPROVED</span>
                                                     @else
-                                                        <span class="badge bg-secondary">{{ $ssr->pro_status }}</span>
+                                                        <span class="badge bg-secondary">{{ $ssa->pro_status }}</span>
                                                     @endif
                                                 </td>
                                                 @php
@@ -122,11 +122,11 @@
                                                     ];
 
                                                     // Default class if status not in the array
-                                                    $badgeClass = $statusColors[$ssr->status] ?? 'bg-secondary';
+                                                    $badgeClass = $statusColors[$ssa->status] ?? 'bg-secondary';
                                                 @endphp
 
                                                 <td class="text-center">
-                                                    <span class="badge {{ $badgeClass }}">{{ $ssr->status }}</span>
+                                                    <span class="badge {{ $badgeClass }}">{{ $ssa->status }}</span>
                                                 </td>
 
                                                 <td>
@@ -138,15 +138,15 @@
                                                         </button>
                                                         <ul class="dropdown-menu" aria-labelledby="actionDropdown">
                                                             <li>
-                                                                <a href="{{ route('ssr.request.show', $ssr) }}"
+                                                                <a href="{{ route('ssa.request.show', $ssa) }}"
                                                                     class="dropdown-item" type="button">View</a>
                                                             </li>
                                                             <li>
-                                                                <a href="{{ route('ssr.request.edit', $ssr) }}"
+                                                                <a href="{{ route('ssa.request.edit', $ssa) }}"
                                                                     class="dropdown-item" type="button">Update</a>
                                                             </li>
                                                             <li>
-                                                                <a href="{{ route('ssr.report.export', $ssr) }}"
+                                                                <a href="{{ route('ssa.report.export', $ssa) }}"
                                                                     class="dropdown-item" type="button">Print</a>
                                                             </li>
                                                             <li>
@@ -155,7 +155,7 @@
                                                             </li>
                                                             <li>
                                                                 <button class="dropdown-item show-attachment" type="button"
-                                                                    data-url="{{ $ssr->doc_url ?? '' }}">
+                                                                    data-url="{{ $ssa->doc_url ?? '' }}">
                                                                     Show Attachment
                                                                 </button>
                                                             </li>

@@ -116,6 +116,28 @@ class PurchaseRequestController extends Controller
         ]);
     }
 
+    public function proIndex(Request $request){
+        $selectedVessel = $request->get('vessel');
+        $status = $request->get('status','OPEN');
+
+        $prs = PurchaseRequest::when($selectedVessel, function ($query) use ($selectedVessel) {
+            $query->where('vessel', $selectedVessel);
+        })
+            ->when($status, function ($query) use ($status) {
+                $query->where('status', strtoupper($status));
+            })
+            ->where('confirmed_status','CONFIRMED')
+            ->where('approved_status', 'APPROVED')
+            ->latest()
+            ->get();
+
+        return view('pro.pr.index', [
+            'prs' => $prs,
+            'vessels' => $this->vessels,
+            'selectedVessel' => $selectedVessel,
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -211,6 +233,12 @@ class PurchaseRequestController extends Controller
         ]);
     }
 
+    public function proEdit(PurchaseRequest $pr){
+        return view('pro.pr.edit',[
+            'pr'=>$pr,
+            'vessels'=>$this->vessels
+        ]);
+    }
     /**
      * Update the specified resource in storage.
      */
@@ -292,6 +320,23 @@ class PurchaseRequestController extends Controller
 
         return redirect()->route('pr.approve.index')
             ->with('success', 'Purchase Request confirmed successfully');
+    }
+
+    public function proUpdate(Request $request, PurchaseRequest $pr){
+        $request->validate([
+            'approval_status'=>'string|nullable',
+        ]);
+
+        $pr->update([
+            'pro_status'=>$request->approval_status,
+            'pro_by'=>auth()->id(),
+            'pro_at'=>now()
+        ]);
+
+        return redirect()->route('pro.pr.index')
+            ->with('success', 'Purchase Request confirmed successfully');
+
+        //Check for quantity of item approved
     }
 
     /**

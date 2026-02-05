@@ -98,6 +98,28 @@ class SsrController extends Controller
         ]);
     }
 
+    public function proIndex(Request $request){
+        $selectedVessel = $request->get('vessel');
+        $status = $request->get('status','OPEN');
+
+        $ssrs = Ssr::when($selectedVessel, function ($query) use ($selectedVessel) {
+            $query->where('vessel', $selectedVessel);
+        })
+            ->when($status, function ($query) use ($status) {
+                $query->where('status', strtoupper($status));
+            })
+            ->where('verified_status','VERIFIED')
+            ->where('approved_status', 'APPROVED')
+            ->latest()
+            ->get();
+
+        return view('pro.ssr.index', [
+            'ssrs' => $ssrs,
+            'vessels' => $this->vessels,
+            'selectedVessel' => $selectedVessel,
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -190,7 +212,7 @@ class SsrController extends Controller
                         'ssr_id'=>$ssr->id,
                         'description'=>$item['description'],
                         'unit'=>$item['unit'] ?? null,
-                        'quantity_req'=>$item['quantity'] ?? 0,
+                        'quantity_req'=>$item['qty_required'] ?? 0,
                         'balance'=>$item['balance'] ?? 0,
                         'quantity_app'=>$item['qty_approved'] ?? 0,
                         'impa_code'=>$item['impa'] ?? null,
@@ -251,6 +273,15 @@ class SsrController extends Controller
         $ssr_items = SsrItem::where('ssr_id', $ssr->id)->get();
 
         return view('ssr.approve.edit',  [
+            'ssr' => $ssr,
+            'ssr_items' => $ssr_items,
+            'vessels' => $this->vessels,]);
+    }
+
+    public function proEdit(Ssr $ssr){
+        $ssr_items = SsrItem::where('ssr_id', $ssr->id)->get();
+
+        return view('pro.ssr.edit',  [
             'ssr' => $ssr,
             'ssr_items' => $ssr_items,
             'vessels' => $this->vessels,]);
@@ -385,6 +416,22 @@ class SsrController extends Controller
         ]);
 
         return redirect()->route('ssr.approve.index')->with('success','SSR is successfully approved!');
+    }
+
+    public function proUpdate(Request $request, Ssr $ssr){
+        $request->validate([
+            'approved_status'=>'nullable|in:PENDING,APPROVED',
+            'approved_remark'=>'nullable|string'
+        ]);
+
+        $ssr->update([
+            'pro_status'=>$request->approved_status,
+            'pro_remark'=>$request->approved_remark,
+            'pro_by'=>auth()->id(),
+            'pro_at'=>now()
+        ]);
+
+        return redirect()->route('pro.ssr.index')->with('success','SSR is successfully approved!');
     }
 
     /**
