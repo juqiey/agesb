@@ -68,10 +68,10 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $ssa->ssa_no }}</td>
-                                                <td>{{ $ssa->date }}</td>
+                                                <td>{{ $ssa->date->format('Y-m-d') }}</td>
                                                 <td>{{ $ssa->vessel }}</td>
                                                 <td>{{ $ssa->location }}</td>
-                                                <td>{{ $ssa->item }}</td>
+                                                <td>{{ $ssa->department }}</td>
                                                 <td>
                                                     @if ($ssa->verified_status === 'PENDING')
                                                         <span class="badge bg-warning text-white">PENDING</span>
