@@ -121,29 +121,32 @@
                                         <div class="card-body">
                                             <div class="row g-2">
                                                 <div class="col-md-6">
-                                                    <label class="form-label">Description</label>
-                                                    <input id="desc" class="form-control">
+                                                    <label class="form-label">AA: Brief Description on the SSA
+                                                        Required</label>
+                                                    <input id="aa" class="form-control">
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <label class="form-label">Model No.</label>
-                                                    <input id="model_no" class="form-control">
+                                                    <label class="form-label">BB: Maker/Model No./Serial No.</label>
+                                                    <input id="bb" class="form-control">
                                                 </div>
                                                 <div class="col-md-4 mt-2">
-                                                    <label class="form-label">Remedial</label>
-                                                    <input id="remedial" class="form-control">
+                                                    <label class="form-label">CC: Remedial Action Carried Out on
+                                                        Board</label>
+                                                    <input id="cc" class="form-control">
                                                 </div>
                                                 <div class="col-md-4 mt-2">
-                                                    <label class="form-label">Assistance</label>
-                                                    <input id="assistance" class="form-control">
+                                                    <label class="form-label">DD: Nature of Assistance Required</label>
+                                                    <input id="dd" class="form-control">
                                                 </div>
                                                 <div class="col-md-4 mt-2">
                                                     <label class="form-label">Remark</label>
                                                     <input id="remark" class="form-control">
                                                 </div>
                                                 <div class="col-12 mt-2">
-                                                    <label class="form-label">Document URL</label>
-                                                    <input id="item_doc" type="file" class="form-control"
-                                                        accept=".pdf,.jpg,.jpeg,.png">
+                                                    <label class="form-label">EE: Miscellaneous (Photo/Sketch/Drawing,
+                                                        etc)</label>
+                                                    <input id="ee" type="file" class="form-control"
+                                                        accept=".pdf,.jpg,.jpeg,.png,.gif">
                                                 </div>
                                             </div>
 
@@ -160,12 +163,12 @@
                                         <table class="table table-bordered align-middle datatable" id="itemsTable">
                                             <thead class="table-light">
                                                 <tr class="text-center">
-                                                    <th>Description</th>
-                                                    <th>Model No.</th>
-                                                    <th>Remedial</th>
-                                                    <th>Assistance</th>
+                                                    <th>AA: Description</th>
+                                                    <th>BB: Maker/Model No.</th>
+                                                    <th>CC: Remedial</th>
+                                                    <th>DD: Assistance</th>
                                                     <th>Remark</th>
-                                                    <th>Document</th>
+                                                    <th>EE: Document</th>
                                                     <th width="80">Action</th>
                                                 </tr>
                                             </thead>
@@ -213,36 +216,52 @@
 
                 document.getElementById('confirmItem').addEventListener('click', function() {
                     const item = {
-                        desc: document.getElementById('desc').value,
-                        model_no: document.getElementById('model_no').value,
-                        remedial: document.getElementById('remedial').value,
-                        assistance: document.getElementById('assistance').value,
+                        aa: document.getElementById('aa').value,
+                        bb: document.getElementById('bb').value,
+                        cc: document.getElementById('cc').value,
+                        dd: document.getElementById('dd').value,
                         remark: document.getElementById('remark').value,
+                        ee: document.getElementById('ee').files[0] ? document.getElementById('ee').files[0]
+                            .name : '',
                     };
 
-                    if (!item.desc) {
-                        alert('Description is required');
+                    if (!item.aa) {
+                        alert('AA: Description is required');
                         return;
                     }
 
+                    // Handle file
+                    let fileInput = document.getElementById('ee');
+                    let clonedInput = fileInput.cloneNode();
+                    clonedInput.id = `ee_${itemIndex}`;
+                    clonedInput.name = `items[${itemIndex}][ee]`;
+                    clonedInput.style.display = 'none';
+
+                    if (fileInput.files[0]) {
+                        clonedInput.files = fileInput.files;
+                        document.querySelector('form').appendChild(clonedInput);
+                    }
+
+                    // Add row
                     itemsTable.row.add([
-                        `${item.desc}<input type="hidden" name="items[${itemIndex}][description]" value="${item.desc}">`,
-                        `${item.model_no}<input type="hidden" name="items[${itemIndex}][model_no]" value="${item.model_no}">`,
-                        `${item.remedial}<input type="hidden" name="items[${itemIndex}][remedial]" value="${item.remedial}">`,
-                        `${item.assistance}<input type="hidden" name="items[${itemIndex}][assistance]" value="${item.assistance}">`,
+                        `${item.aa}<input type="hidden" name="items[${itemIndex}][aa]" value="${item.aa}">`,
+                        `${item.bb}<input type="hidden" name="items[${itemIndex}][bb]" value="${item.bb}">`,
+                        `${item.cc}<input type="hidden" name="items[${itemIndex}][cc]" value="${item.cc}">`,
+                        `${item.dd}<input type="hidden" name="items[${itemIndex}][dd]" value="${item.dd}">`,
                         `${item.remark}<input type="hidden" name="items[${itemIndex}][remark]" value="${item.remark}">`,
-                        `<input type="hidden" name="items[${itemIndex}][doc_url]" value="">`,
+                        `${item.ee}`,
                         `<button type="button" class="btn btn-danger btn-sm removeRow">&times;</button>`
                     ]).draw(false);
 
                     itemIndex++;
 
-                    // Clear inputs
-                    document.getElementById('desc').value = '';
-                    document.getElementById('model_no').value = '';
-                    document.getElementById('remedial').value = '';
-                    document.getElementById('assistance').value = '';
+                    // Reset inputs
+                    document.getElementById('aa').value = '';
+                    document.getElementById('bb').value = '';
+                    document.getElementById('cc').value = '';
+                    document.getElementById('dd').value = '';
                     document.getElementById('remark').value = '';
+                    fileInput.value = '';
                 });
 
                 $('#itemsTable tbody').on('click', '.removeRow', function() {

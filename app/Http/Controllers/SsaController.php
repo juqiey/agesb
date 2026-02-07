@@ -95,6 +95,7 @@ class SsaController extends Controller
         return view('ssa.report.index', compact('ssas', 'selectedVessel'))->with('vessels', $this->vessels);
     }
 
+    // ---------------- STORE -----------------
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -106,13 +107,16 @@ class SsaController extends Controller
             'ssa_raised' => 'required|string|max:50',
             'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:4096',
             'items' => 'nullable|array',
-            'items.*.description' => 'nullable|string|max:255',
-            'items.*.model_no' => 'nullable|string|max:50',
-            'items.*.remedial' => 'nullable|string|max:255',
-            'items.*.assistance' => 'nullable|string|max:255',
+            'items.*.aa' => 'nullable|string|max:255',
+            'items.*.bb' => 'nullable|string|max:50',
+            'items.*.cc' => 'nullable|string|max:255',
+            'items.*.dd' => 'nullable|string|max:255',
             'items.*.remark' => 'nullable|string|max:500',
+            'items.*.ee' => 'nullable|file|mimes:pdf,jpg,jpeg,png,gif|max:4096',
+
         ]);
 
+        // Upload main attachment
         if($request->hasFile('attachment')){
             $file = $request->file('attachment');
             $filename = date('Ymd_His').'_'.$file->getClientOriginalName();
@@ -128,7 +132,7 @@ class SsaController extends Controller
             'vessel'=>$validated['vessel'],
             'date'=>$validated['ssa_date'],
             'department'=>$validated['department'],
-            'ssa_raised' => $validated['ssa_raised'],
+            'ssa_raised'=>$validated['ssa_raised'],
             'doc_url'=>$validated['attachment'] ?? null,
             'status'=>'OPEN',
             'verified_status'=>'PENDING',
@@ -137,15 +141,33 @@ class SsaController extends Controller
             'created_by'=>Auth::id(),
         ]);
 
-        if(!empty($validated['items'])){
-            foreach($validated['items'] as $item){
+        // Insert SSA items WITH FILE UPLOAD
+        if ($request->has('items')) {
+            foreach ($request->items as $index => $item) {
+
+                $docPath = null;
+
+                if ($request->hasFile("items.$index.ee")) {
+                    $file = $request->file("items.$index.ee");
+                    $filename = time().'_'.$file->getClientOriginalName();
+                    $path = public_path('uploads/ssa_items');
+
+                    if (!file_exists($path)) {
+                        mkdir($path, 0777, true);
+                    }
+
+                    $file->move($path, $filename);
+                    $docPath = 'uploads/ssa_items/'.$filename;
+                }
+
                 $ssa->ssa_items()->create([
-                    'description'=>$item['description'] ?? null,
-                    'model_no'=>$item['model_no'] ?? null,
-                    'remedial'=>$item['remedial'] ?? null,
-                    'assistance'=>$item['assistance'] ?? null,
-                    'remark'=>$item['remark'] ?? null,
-                    'status'=>'OPEN'
+                    'description' => $item['aa'] ?? null,
+                    'model_no'    => $item['bb'] ?? null,
+                    'remedial'    => $item['cc'] ?? null,
+                    'assistance'  => $item['dd'] ?? null,
+                    'remark'      => $item['remark'] ?? null,
+                    'doc_url'     => $docPath,
+                    'status'      => 'OPEN',
                 ]);
             }
         }
@@ -153,18 +175,7 @@ class SsaController extends Controller
         return redirect()->route('ssa.request.index')->with('success','SSA created successfully.');
     }
 
-    public function show(Ssa $ssa)
-    {
-        $ssa_items = $ssa->ssa_items()->get();
-        return view('ssa.request.show', compact('ssa','ssa_items'));
-    }
-
-    public function edit(Ssa $ssa)
-    {
-        $ssa_items = $ssa->ssa_items()->get();
-        return view('ssa.request.edit', compact('ssa','ssa_items'))->with('vessels', $this->vessels);
-    }
-
+    // ---------------- UPDATE -----------------
     public function update(Request $request, Ssa $ssa)
     {
         $validated = $request->validate([
@@ -176,13 +187,15 @@ class SsaController extends Controller
             'ssa_raised' => 'required|string|max:50',
             'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:4096',
             'items' => 'nullable|array',
-            'items.*.description' => 'nullable|string|max:255',
-            'items.*.model_no' => 'nullable|string|max:50',
-            'items.*.remedial' => 'nullable|string|max:255',
-            'items.*.assistance' => 'nullable|string|max:255',
+            'items.*.aa' => 'nullable|string|max:255',
+            'items.*.bb' => 'nullable|string|max:50',
+            'items.*.cc' => 'nullable|string|max:255',
+            'items.*.dd' => 'nullable|string|max:255',
             'items.*.remark' => 'nullable|string|max:500',
+            'items.*.ee' => 'nullable|file|mimes:pdf,jpg,jpeg,png,gif|max:4096',
         ]);
 
+        // Update attachment
         if($request->hasFile('attachment')){
             if($ssa->doc_url && file_exists(public_path($ssa->doc_url))){
                 unlink(public_path($ssa->doc_url));
@@ -202,27 +215,47 @@ class SsaController extends Controller
             'vessel'=>$validated['vessel'],
             'date'=>$validated['ssa_date'],
             'department'=>$validated['department'],
-            'ssa_raised' => $validated['ssa_raised'],
+            'ssa_raised'=>$validated['ssa_raised'],
             'doc_url'=>$validated['attachment'] ?? $ssa->doc_url,
         ]);
 
+        // Delete old items and insert new ones
         $ssa->ssa_items()->delete();
-        if(!empty($validated['items'])){
-            foreach($validated['items'] as $item){
+
+        // Insert SSA items WITH FILE UPLOAD
+        if ($request->has('items')) {
+            foreach ($request->items as $index => $item) {
+
+                $docPath = null;
+
+                if ($request->hasFile("items.$index.ee")) {
+                    $file = $request->file("items.$index.ee");
+                    $filename = time().'_'.$file->getClientOriginalName();
+                    $path = public_path('uploads/ssa_items');
+
+                    if (!file_exists($path)) {
+                        mkdir($path, 0777, true);
+                    }
+
+                    $file->move($path, $filename);
+                    $docPath = 'uploads/ssa_items/'.$filename;
+                }
+
                 $ssa->ssa_items()->create([
-                    'description'=>$item['description'] ?? null,
-                    'model_no'=>$item['model_no'] ?? null,
-                    'remedial'=>$item['remedial'] ?? null,
-                    'assistance'=>$item['assistance'] ?? null,
-                    'remark'=>$item['remark'] ?? null,
-                    'status'=>'OPEN'
+                    'description' => $item['aa'] ?? null,
+                    'model_no'    => $item['bb'] ?? null,
+                    'remedial'    => $item['cc'] ?? null,
+                    'assistance'  => $item['dd'] ?? null,
+                    'remark'      => $item['remark'] ?? null,
+                    'doc_url'     => $docPath,
+                    'status'      => 'OPEN',
                 ]);
             }
         }
-
         return redirect()->route('ssa.request.index')->with('success','SSA updated successfully.');
     }
 
+    // ---------------- VERIFY -----------------
     public function verifyUpdate(Request $request, Ssa $ssa)
     {
         $request->validate([
@@ -253,6 +286,7 @@ class SsaController extends Controller
         return redirect()->route('ssa.verify.index')->with('success','SSA verified successfully!');
     }
 
+    // ---------------- APPROVE -----------------
     public function approveUpdate(Request $request, Ssa $ssa)
     {
         $request->validate([
@@ -270,6 +304,7 @@ class SsaController extends Controller
         return redirect()->route('ssa.approve.index')->with('success','SSA approved successfully!');
     }
 
+    // ---------------- PRO -----------------
     public function proUpdate(Request $request, Ssa $ssa)
     {
         $request->validate([
@@ -287,6 +322,7 @@ class SsaController extends Controller
         return redirect()->route('pro.ssa.index')->with('success','SSA PRO approved successfully!');
     }
 
+    // ---------------- DESTROY -----------------
     public function destroy(Ssa $ssa)
     {
         $ssa->deleted_by = Auth::id();
@@ -296,6 +332,7 @@ class SsaController extends Controller
         return redirect()->route('ssa.request.index')->with('success','SSA deleted successfully.');
     }
 
+    // ---------------- EXPORT -----------------
     public function exportReport(Ssa $ssa)
     {
         $pdf = Pdf::loadView('ssa.report.report', compact('ssa'))->setPaper('a4','portrait');
