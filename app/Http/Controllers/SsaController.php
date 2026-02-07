@@ -53,6 +53,20 @@ class SsaController extends Controller
         return view('ssa.verify.index', compact('ssas', 'selectedVessel'))->with('vessels', $this->vessels);
     }
 
+    public function verifyEdit(Ssa $ssa)
+    {
+        $ssa_items = $ssa->ssa_items;
+        return view('ssa.verify.edit', compact('ssa', 'ssa_items'))
+            ->with('vessels', $this->vessels);
+    }
+
+    public function verifyShow(Ssa $ssa)
+    {
+        $ssa_items = $ssa->ssa_items;
+        return view('ssa.verify.show', compact('ssa', 'ssa_items'))
+            ->with('vessels', $this->vessels);
+    }
+
     public function approveIndex(Request $request)
     {
         $selectedVessel = $request->get('vessel');
@@ -64,6 +78,20 @@ class SsaController extends Controller
             ->latest()->get();
 
         return view('ssa.approve.index', compact('ssas', 'selectedVessel'))->with('vessels', $this->vessels);
+    }
+
+    public function approveEdit(Ssa $ssa)
+    {
+        $ssa_items = $ssa->ssa_items;
+        return view('ssa.approve.edit', compact('ssa', 'ssa_items'))
+            ->with('vessels', $this->vessels);
+    }
+
+    public function approveShow(Ssa $ssa)
+    {
+        $ssa_items = $ssa->ssa_items;
+        return view('ssa.approve.show', compact('ssa', 'ssa_items'))
+            ->with('vessels', $this->vessels);
     }
 
     public function proIndex(Request $request)
