@@ -80,6 +80,12 @@ class SsaController extends Controller
         return view('pro.ssa.index', compact('ssas', 'selectedVessel'))->with('vessels', $this->vessels);
     }
 
+    public function show(Ssa $ssa)
+    {
+        $ssa_items = $ssa->ssa_items; // relationship in your Ssa model
+        return view('ssa.request.show', compact('ssa', 'ssa_items'))->with('vessels', $this->vessels);
+    }
+
     public function create(Request $request)
     {
         $selectedVessel = $request->query('vessel', null);
@@ -173,6 +179,14 @@ class SsaController extends Controller
         }
 
         return redirect()->route('ssa.request.index')->with('success','SSA created successfully.');
+    }
+
+    // ---------------- EDIT -----------------
+    public function edit(Ssa $ssa)
+    {
+        $ssa_items = $ssa->ssa_items; // get related items
+        return view('ssa.request.edit', compact('ssa', 'ssa_items'))
+            ->with('vessels', $this->vessels);
     }
 
     // ---------------- UPDATE -----------------
