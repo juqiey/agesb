@@ -233,9 +233,6 @@ class SsaController extends Controller
             'doc_url'=>$validated['attachment'] ?? $ssa->doc_url,
         ]);
 
-        // Delete old items and insert new ones
-        $ssa->ssa_items()->delete();
-
         // Insert SSA items WITH FILE UPLOAD
         if ($request->has('items')) {
             foreach ($request->items as $index => $item) {

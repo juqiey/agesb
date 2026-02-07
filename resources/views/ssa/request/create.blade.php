@@ -147,6 +147,7 @@
                                                         etc)</label>
                                                     <input id="ee" type="file" class="form-control"
                                                         accept=".pdf,.jpg,.jpeg,.png,.gif">
+                                                    <small class="text-muted">Max file size: 4 MB</small>
                                                 </div>
                                             </div>
 

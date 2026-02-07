@@ -193,6 +193,7 @@
             let itemIndex = {{ $ssa_items->count() ?? 0 }};
             let table = $('#itemsTable').DataTable();
             let hiddenContainer = $('#hiddenInputs');
+            let fileStorage = {}; // Store files here!
 
             // Load existing items
             @foreach ($ssa_items as $i)
@@ -224,7 +225,13 @@
                 let cc = $('#cc').val();
                 let dd = $('#dd').val();
                 let remark = $('#remark').val();
-                let ee = $('#ee')[0].files[0] ? $('#ee')[0].files[0].name : '';
+
+                // GET THE ACTUAL FILE
+                let fileObj = $('#ee')[0].files[0];
+                let fileName = fileObj ? fileObj.name : 'No file';
+
+                // STORE THE FILE OBJECT
+                fileStorage[itemIndex] = fileObj;
 
                 table.row.add([
                     aa + `<input type="hidden" name="items[${itemIndex}][aa]" value="${aa}">`,
@@ -232,7 +239,7 @@
                     cc + `<input type="hidden" name="items[${itemIndex}][cc]" value="${cc}">`,
                     dd + `<input type="hidden" name="items[${itemIndex}][dd]" value="${dd}">`,
                     remark + `<input type="hidden" name="items[${itemIndex}][remark]" value="${remark}">`,
-                    ee,
+                    fileName,
                     `<button type="button" class="btn btn-danger btn-sm removeRow">X</button>`
                 ]).draw(false);
 
@@ -246,6 +253,36 @@
                 let rowIndex = row.index();
                 row.remove().draw();
                 hiddenContainer.find(`input[name^="items[${rowIndex}]"]`).remove();
+                delete fileStorage[rowIndex];
+            });
+
+            // SUBMIT FORM WITH FILES
+            $('form').on('submit', function(e) {
+                e.preventDefault();
+
+                let formData = new FormData(this);
+
+                // ADD THE FILES TO FormData
+                Object.keys(fileStorage).forEach(function(index) {
+                    if (fileStorage[index]) {
+                        formData.append('items[' + index + '][ee]', fileStorage[index]);
+                    }
+                });
+
+                // SUBMIT
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        window.location.href = '{{ route('ssa.request.index') }}';
+                    },
+                    error: function(xhr) {
+                        alert('Error: ' + xhr.responseText);
+                    }
+                });
             });
         </script>
     @endpush
