@@ -41,6 +41,7 @@ class SsaController extends Controller
         return view('ssa.request.index', compact('ssas', 'selectedVessel'))->with('vessels', $this->vessels);
     }
 
+    //verify
     public function verifyIndex(Request $request)
     {
         $selectedVessel = $request->get('vessel');
@@ -67,6 +68,7 @@ class SsaController extends Controller
             ->with('vessels', $this->vessels);
     }
 
+    //approve
     public function approveIndex(Request $request)
     {
         $selectedVessel = $request->get('vessel');
@@ -94,6 +96,7 @@ class SsaController extends Controller
             ->with('vessels', $this->vessels);
     }
 
+    //procurement
     public function proIndex(Request $request)
     {
         $selectedVessel = $request->get('vessel');
@@ -120,6 +123,7 @@ class SsaController extends Controller
         return view('ssa.request.create', compact('selectedVessel'))->with('vessels', $this->vessels);
     }
 
+    //report
     public function reportIndex(Request $request)
     {
         $selectedVessel = $request->get('vessel');
