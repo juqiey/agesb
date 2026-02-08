@@ -48,11 +48,6 @@ return new class extends Migration
             $table->string('pro_status',33)->nullable();
             $table->string('pro_remark',255)->nullable();
 
-            //add new migrations
-            $table->integer('created_by')->nullable();
-            $table->integer('updated_by')->nullable();
-            $table->integer('deleted_by')->nullable();
-
             $table->timestamps();
             $table->softDeletes();
         });
