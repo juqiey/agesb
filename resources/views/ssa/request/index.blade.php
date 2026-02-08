@@ -113,6 +113,13 @@
                                                     @else
                                                         <span class="badge bg-secondary">{{ $ssa->pro_status }}</span>
                                                     @endif
+
+                                                    {{-- Remark under badge --}}
+                                                    @if(!empty($ssa->pro_remark))
+                                                        <div class="text-muted small mt-1">
+                                                            Remark: {{ $ssa->pro_remark }}
+                                                        </div>
+                                                    @endif
                                                 </td>
                                                 @php
                                                     $statusColors = [
