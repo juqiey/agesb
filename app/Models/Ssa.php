@@ -21,6 +21,7 @@ class Ssa extends Model
         'doc_url',
         'status',
         'ssa_raised',
+        'created_by',
         'verified_at',
         'verified_by',
         'verified_status',

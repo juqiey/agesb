@@ -90,7 +90,7 @@
                                             </div>
 
                                             <small class="text-muted d-block">Created By:
-                                                {{ $ssa->createdBy->name ?? '-' }}</small>
+                                                {{ $ssa->user->name ?? '-' }}</small>
                                             <small class="text-muted d-block">Created At:
                                                 {{ optional($ssa->created_at)->format('d M Y, h:i A') }}</small>
                                         </div>

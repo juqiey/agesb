@@ -15,7 +15,7 @@
                         </div>
 
                         {{-- Card Body --}}
-                        <div class="card-body px-4 pt-4 pb-4">
+                        <div class="card-body px-4 pt-4 pb-4">  
 
                             {{-- Basic Information --}}
                             <div class="mb-4 p-4 border rounded bg-light">
@@ -147,7 +147,7 @@
                                                 {{ $ssa->approvedBy->name ?? '-' }}</small>
                                             <small class="text-muted d-block">Date:
                                                 {{ optional($ssa->approved_at)->format('d M Y, h:i A') ?? '-' }}</small>
-                                                
+
                                             @if ($ssa->approved_remark)
                                                 <div class="mt-2 small fst-italic text-secondary">
                                                     "{{ $ssa->approved_remark }}"
