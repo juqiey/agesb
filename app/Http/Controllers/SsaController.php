@@ -110,6 +110,13 @@ class SsaController extends Controller
 
         return view('pro.ssa.index', compact('ssas', 'selectedVessel'))->with('vessels', $this->vessels);
     }
+    //Procurement approval
+    public function proEdit(Ssa $ssa)
+    {
+        $ssa_items = $ssa->ssa_items;
+        return view('pro.ssa.edit', compact('ssa', 'ssa_items'))
+            ->with('vessels', $this->vessels);
+    }
 
     public function show(Ssa $ssa)
     {
