@@ -316,8 +316,16 @@ class SsaController extends Controller
         }
         // Soft delete items that user removed
         if ($request->has('delete_items') && !empty($request->delete_items)) {
-            SsaItem::whereIn('id', $request->delete_items)->delete();
+            foreach ($request->delete_items as $itemId) {
+                $item = SsaItem::find($itemId);
+                if ($item) {
+                    $item->deleted_by = Auth::id(); // set who deleted it
+                    $item->save();
+                    $item->delete(); // soft delete
+                }
+            }
         }
+
         return redirect()->route('ssa.request.index')->with('success','SSA updated successfully.');
     }
 
