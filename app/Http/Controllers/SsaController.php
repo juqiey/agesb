@@ -220,6 +220,8 @@ class SsaController extends Controller
                     'remark'      => $item['remark'] ?? null,
                     'doc_url'     => $docPath,
                     'status'      => 'OPEN',
+                    'created_by'  => Auth::id(),
+                    'updated_by'  => Auth::id(),
                 ]);
             }
         }
@@ -307,6 +309,8 @@ class SsaController extends Controller
                     'remark'      => $item['remark'] ?? null,
                     'doc_url'     => $docPath,
                     'status'      => 'OPEN',
+                    'created_by'  => Auth::id(),
+                    'updated_by'  => Auth::id(),
                 ]);
             }
         }
