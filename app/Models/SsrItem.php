@@ -24,10 +24,10 @@ class SsrItem extends Model
     ];
 
     public function ssr(){
-        return $this->belongsTo(Ssr::class);
+        return $this->belongsTo(Ssr::class, 'ssr_id', 'id');
     }
 
     public function delivery_order(){
-        return $this->belongsTo(DeliveryOrder::class);
+        return $this->belongsTo(DeliveryOrder::class, 'do_id', 'id');
     }
 }

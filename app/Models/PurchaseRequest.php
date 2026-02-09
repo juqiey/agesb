@@ -55,7 +55,7 @@ class PurchaseRequest extends Model
         return $this->belongsTo(User::class, 'approved_by');
     }
 
-    public function procBy(){
+    public function proBy(){
         return $this->belongsTo(User::class, 'pro_by');
     }
 

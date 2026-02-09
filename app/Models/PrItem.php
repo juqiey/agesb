@@ -27,4 +27,8 @@ class PrItem extends Model
         return $this->belongsTo(DeliveryOrder::class, 'do_id','id');
     }
 
+    public function purchase_requests(){
+        return $this->belongsTo(PurchaseRequest::class, 'pr_id', 'id');
+    }
+
 }

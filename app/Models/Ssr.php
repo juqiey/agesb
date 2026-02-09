@@ -54,4 +54,8 @@ class Ssr extends Model
     public function approvedBy(){
         return $this->belongsTo(User::class, 'approved_by');
     }
+
+    public function proBy(){
+        return $this->belongsTo(User::class, 'pro_by');
+    }
 }
