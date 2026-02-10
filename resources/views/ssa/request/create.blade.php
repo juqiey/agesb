@@ -120,7 +120,8 @@
                                             <h6>Add Items</h6>
                                         </div>
                                         <div class="card-body">
-                                            <div class="row g-2">
+                                            {{-- Line 1: AA and BB --}}
+                                            <div class="row g-2 mb-3">
                                                 <div class="col-md-6">
                                                     <label class="form-label">AA: Brief Description on the SSA
                                                         Required</label>
@@ -130,20 +131,24 @@
                                                     <label class="form-label">BB: Maker/Model No./Serial No.</label>
                                                     <input id="bb" class="form-control">
                                                 </div>
-                                                <div class="col-md-4 mt-2">
+                                            </div>
+
+                                            {{-- Line 2: CC and DD --}}
+                                            <div class="row g-2 mb-3">
+                                                <div class="col-md-6">
                                                     <label class="form-label">CC: Remedial Action Carried Out on
                                                         Board</label>
                                                     <input id="cc" class="form-control">
                                                 </div>
-                                                <div class="col-md-4 mt-2">
+                                                <div class="col-md-6">
                                                     <label class="form-label">DD: Nature of Assistance Required</label>
                                                     <input id="dd" class="form-control">
                                                 </div>
-                                                <div class="col-md-4 mt-2">
-                                                    <label class="form-label">Remark</label>
-                                                    <input id="remark" class="form-control">
-                                                </div>
-                                                <div class="col-12 mt-2">
+                                            </div>
+
+                                            {{-- Line 3: EE File Upload --}}
+                                            <div class="row g-2 mb-3">
+                                                <div class="col-12">
                                                     <label class="form-label">EE: Miscellaneous (Photo/Sketch/Drawing,
                                                         etc)</label>
                                                     <input id="ee" type="file" class="form-control"
@@ -152,7 +157,15 @@
                                                 </div>
                                             </div>
 
-                                            <div class="text-end mt-3">
+                                            {{-- Line 4: Remark --}}
+                                            <div class="row g-2 mb-3">
+                                                <div class="col-12">
+                                                    <label class="form-label">Remark</label>
+                                                    <input id="remark" class="form-control">
+                                                </div>
+                                            </div>
+
+                                            <div class="text-end">
                                                 <button type="button" id="confirmItem" class="btn btn-success btn-sm">
                                                     Confirm Item
                                                 </button>
