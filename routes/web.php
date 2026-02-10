@@ -9,6 +9,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ResetController;
 use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\SsrController;
+use App\Http\Controllers\SsaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
@@ -97,6 +98,34 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/report/summary', [SsrController::class, 'exportSummary'])->name('report.summary');
     });
 
+    Route::prefix('ssa')->name('ssa.')->group(function(){
+        //SSA->Request routes here
+        Route::get('/request',[SsaController::class,'index'])->name('request.index');
+        Route::get('/request/create',[SsaController::class,'create'])->name('request.create');
+        Route::post('/request/store',[SsaController::class, 'store'])->name('request.store');
+        Route::get('/request/edit/{ssa}', [SsaController::class, 'edit'])->name('request.edit');
+        Route::put('/request/update/{ssa}',[SsaController::class, 'update'])->name('request.update');
+        Route::get('/request/show/{ssa}', [SsaController::class, 'show'])->name('request.show');
+        Route::delete('/destroy/{ssa}', [SsaController::class, 'destroy'])->name('destroy');
+
+        //SSA->Verification routes here
+        Route::get('/verify',[SsaController::class, 'verifyIndex'])->name('verify.index');
+        Route::get('/verify/edit/{ssa}', [SsaController::class, 'verifyEdit'])->name('verify.edit');
+        Route::put('/verify/update/{ssa}', [SsaController::class, 'verifyUpdate'])->name('verify.update');
+        Route::get('/verify/show/{ssa}', [SsaController::class, 'verifyShow'])->name('verify.show');
+
+        //SSA->Approval routes here
+        Route::get('/approve',[SsaController::class, 'approveIndex'])->name('approve.index');
+        Route::get('/approve/edit/{ssa}', [SsaController::class, 'approveEdit'])->name('approve.edit');
+        Route::put('/approve/update/{ssa}', [SsaController::class, 'approveUpdate'])->name('approve.update');
+        Route::get('/approve/show/{ssa}', [SsaController::class, 'approveShow'])->name('approve.show');
+
+        //SSA->Export pdf routes here
+        Route::get('/report/export/{ssa}',[SsaController::class, 'exportReport'])->name('report.export');
+        Route::get('/report',[SsaController::class, 'reportIndex'])->name('report.index');
+        Route::get('/report/summary', [SsaController::class, 'exportSummary'])->name('report.summary');
+    });
+
     Route::prefix('pr')->name('pr.')->group(function(){
         //PR->Request routes here
         Route::get('/request', [PurchaseRequestController::class, 'index'])->name('request.index');
@@ -138,6 +167,13 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/ssr/edit/{ssr}', [SsrController::class, 'proEdit'])->name('ssr.edit');
         Route::put('/ssr/update/{ssr}', [SsrController::class, 'proUpdate'])->name('ssr.update');
 
+        //SSA Routes here
+        Route::get('/ssa', [SsaController::class, 'proIndex'])->name('ssa.index');
+        Route::get('/ssa/show/{ssa}', [SsaController::class, 'proShow'])->name('ssa.show');
+        Route::get('/ssa/edit/{ssa}', [SsaController::class, 'proEdit'])->name('ssa.edit');
+        Route::put('/ssa/update/{ssa}', [SsaController::class, 'proUpdate'])->name('ssa.update');
+        Route::delete('/ssa/{ssa}', [SsaController::class, 'destroy'])->name('ssa.destroy');
+
         Route::get('/do', [DeliveryOrderController::class, 'index'])->name('do.index');
         Route::get('/do/create', [DeliveryOrderController::class, 'create'])->name('do.create');
         Route::get('/do/pr_items/{id}', [DeliveryOrderController::class, 'getPRItems'])->name('do.pr_items');
@@ -154,8 +190,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/user/{user}', [InfoUserController::class, 'show'])->name('user.show');
     Route::post('/user/store', [InfoUserController::class, 'store'])->name('user.store');
 });
-
-
 
 Route::group(['middleware' => 'guest'], function () {
     Route::get('/register', [RegisterController::class, 'create']);
