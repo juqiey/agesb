@@ -111,7 +111,7 @@
             </table>
         </td>
 
-        <td style="width: 40%; vertical-align: middle;">
+        <td style="width: 30%; vertical-align: middle;">
             <div class="title-box">PURCHASE REQUEST</div>
         </td>
     </tr>
@@ -254,7 +254,7 @@
                 Position: {{ $pr->requestedBy->position ?? ' ' }}
             </td>
             <td class="signature-detail">
-                Position: {{ $pr->checkedBy->position ?? ' ' }}
+                Position: {{ $pr->confirmedBy->position ?? ' ' }}
             </td>
             <td class="signature-detail">
                 Position: {{ $pr->approvedBy->position ?? '' }}
@@ -264,7 +264,7 @@
         <!-- DATE ROW -->
         <tr>
             <td class="signature-detail">
-                Date: {{ optional($pr->requested_at)->format('d/m/Y') }}
+                Date: {{ optional($pr->created_at)->format('d/m/Y') }}
             </td>
             <td class="signature-detail">
                 Date: {{ optional($pr->confirmed_at)->format('d/m/Y') }}

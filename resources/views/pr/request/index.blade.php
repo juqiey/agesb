@@ -123,7 +123,9 @@
                                                             <li>
                                                                 <a href="{{ route('pr.request.edit', $pr) }}" class="dropdown-item" type="button">Update</a>
                                                             </li>
-
+                                                            <li>
+                                                                <a href="{{ route('pr.report.export', $pr) }}" class="dropdown-item" type="button">Print</a>
+                                                            </li>
                                                             <li>
                                                                 <button class="dropdown-item text-danger" type="button">Delete</button>
                                                             </li>

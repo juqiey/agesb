@@ -27,10 +27,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => 'auth'], function () {
 
-    Route::get('/', [HomeController::class, 'home']);
-	Route::get('dashboard', function () {
-		return view('dashboard');
-	})->name('dashboard');
+    Route::get('/', function () {
+        return redirect()->route('dashboard');
+    });
+
+    Route::get('dashboard', [HomeController::class, 'home'])->name('dashboard');
 
 	/*Route::get('billing', function () {
 		return view('billing');
@@ -145,6 +146,13 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/do/show/{do}', [DeliveryOrderController::class, 'show'])->name('do.show');
         Route::get('/do/report/{do}', [DeliveryOrderController::class, 'exportReport'])->name('do.report');
     });
+
+    Route::get('/profile', [InfoUserController::class, 'profile'])->name('user.profile');
+    Route::put('/profile/update', [InfoUserController::class, 'updateProfile'])->name('user.profile.update');
+    Route::get('/user', [InfoUserController::class, 'index'])->name('user.index');
+    Route::get('/user/create', [InfoUserController::class, 'create'])->name('user.create');
+    Route::get('/user/{user}', [InfoUserController::class, 'show'])->name('user.show');
+    Route::post('/user/store', [InfoUserController::class, 'store'])->name('user.store');
 });
 
 
