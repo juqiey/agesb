@@ -220,6 +220,8 @@ class SsaController extends Controller
                     'remark'      => $item['remark'] ?? null,
                     'doc_url'     => $docPath,
                     'status'      => 'OPEN',
+                    'created_by'  => Auth::id(),
+                    'updated_by'  => Auth::id(),
                 ]);
             }
         }
@@ -277,6 +279,7 @@ class SsaController extends Controller
             'department'=>$validated['department'],
             'ssa_raised'=>$validated['ssa_raised'],
             'doc_url'=>$validated['attachment'] ?? $ssa->doc_url,
+            'updated_by' => Auth::id(),
         ]);
 
         // Insert SSA items WITH FILE UPLOAD
@@ -306,13 +309,23 @@ class SsaController extends Controller
                     'remark'      => $item['remark'] ?? null,
                     'doc_url'     => $docPath,
                     'status'      => 'OPEN',
+                    'created_by'  => Auth::id(),
+                    'updated_by'  => Auth::id(),
                 ]);
             }
         }
         // Soft delete items that user removed
         if ($request->has('delete_items') && !empty($request->delete_items)) {
-            SsaItem::whereIn('id', $request->delete_items)->delete();
+            foreach ($request->delete_items as $itemId) {
+                $item = SsaItem::find($itemId);
+                if ($item) {
+                    $item->deleted_by = Auth::id(); // set who deleted it
+                    $item->save();
+                    $item->delete(); // soft delete
+                }
+            }
         }
+
         return redirect()->route('ssa.request.index')->with('success','SSA updated successfully.');
     }
 

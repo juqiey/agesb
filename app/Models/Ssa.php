@@ -22,6 +22,7 @@ class Ssa extends Model
         'status',
         'ssa_raised',
         'created_by',
+        'updated_by',
         'verified_at',
         'verified_by',
         'verified_status',
