@@ -35,7 +35,7 @@ class Ssa extends Model
         'pro_at',
         'pro_status',
         'pro_remark',
-        'requested_by'
+        'requested_by',
     ];
 
     protected $casts = [
@@ -67,5 +67,9 @@ class Ssa extends Model
 
     public function proBy(){
         return $this->belongsTo(User::class, 'pro_by');
+    }
+
+    public function openItem(){
+        return $this->hasMany(SsaItem::class, 'ssa_id','id')->where('status','OPEN');
     }
 }

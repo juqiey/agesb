@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Ssa; 
+use App\Models\Ssa;
 use App\Models\SsaItem;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class SsaController extends Controller
 {
@@ -110,6 +111,7 @@ class SsaController extends Controller
 
         return view('pro.ssa.index', compact('ssas', 'selectedVessel'))->with('vessels', $this->vessels);
     }
+
     //Procurement approval
     public function proEdit(Ssa $ssa)
     {
@@ -150,6 +152,7 @@ class SsaController extends Controller
     // ---------------- STORE -----------------
     public function store(Request $request)
     {
+
         $validated = $request->validate([
             'ssa_no' => 'required|string|max:50',
             'location' => 'required|string|max:255',
@@ -237,9 +240,16 @@ class SsaController extends Controller
             ->with('vessels', $this->vessels);
     }
 
+    public function close(Ssa $ssa){
+        return view('ssa.request.close', [
+           'ssa'=>$ssa,
+            'vessels'=>$this->vessels
+        ]);
+    }
+
     // ---------------- UPDATE -----------------
     public function update(Request $request, Ssa $ssa)
-    {   
+    {
         $validated = $request->validate([
             'ssa_no' => 'required|string|max:50',
             'location' => 'required|string|max:255',
@@ -394,6 +404,69 @@ class SsaController extends Controller
         ]);
 
         return redirect()->route('pro.ssa.index')->with('success','SSA PRO approved successfully!');
+    }
+
+    public function closeSsa(Request $request, Ssa $ssa){
+        $request->validate([
+           'service_items'=>'required|array|min:1',
+            'service_items.*.ssa_item_id' => 'required|distinct|exists:ssa_items,id',
+            'service_items.*.report' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+        ]);
+
+        DB::beginTransaction();
+
+        try{
+            foreach($request->service_items as $index => $item){
+                $ssaItem = $ssa->ssa_items()
+                ->where('id', $item['ssa_item_id'])
+                ->where('status','OPEN')
+                ->firstOrFail();
+
+
+                if ($request->hasFile("service_items.$index.report")) {
+
+                    // Delete old report if exists
+                    if ($ssaItem->service_report_url &&
+                        file_exists(public_path($ssaItem->service_url))) {
+                        unlink(public_path($ssaItem->service_url));
+                    }
+
+                    $file = $request->file("service_items.$index.report");
+                    $filename = date('Ymd_His') . '_' . $file->getClientOriginalName();
+                    $destination = public_path('uploads/service_reports');
+
+                    if (!file_exists($destination)) {
+                        mkdir($destination, 0777, true);
+                    }
+
+                    $file->move($destination, $filename);
+
+                    $serviceReport = 'uploads/attachment/' . $filename;
+
+                    $ssaItem->update([
+                        'service_url'=>$serviceReport,
+                        'status'=>'CLOSE'
+                    ]);
+                }
+            }
+
+            if ($ssa->ssa_items()->where('status', '!=', 'CLOSE')->doesntExist()) {
+                $ssa->update([
+                    'status' => 'CLOSE',
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect()->route('ssa.request.index')->with('success', 'Service reports uploaded successfully!');
+
+        }catch (\Exception $e){
+            DB::rollBack();
+
+            return redirect()
+                ->back()
+                ->with('error', 'Failed to upload service reports: ' . $e->getMessage());
+        }
     }
 
     // ---------------- DESTROY -----------------

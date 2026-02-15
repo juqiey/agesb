@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class SsaItem extends Model
 {
     use SoftDeletes;
-    
+
     protected $fillable = [
         'description',
         'model_no',
@@ -20,6 +20,7 @@ class SsaItem extends Model
         'created_by',
         'updated_by',
         'deleted_by',
+        'service_url'
     ];
     protected $dates = ['deleted_at'];
     public function ssa(){
