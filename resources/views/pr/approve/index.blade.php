@@ -63,9 +63,7 @@
                                     <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>PR No.</th>
-                                        <th>Date</th>
-                                        <th>Vessel</th>
+                                        <th>PR Info</th>
                                         <th>Category</th>
                                         <th>Confirmation</th>
                                         <th>Approval</th>
@@ -77,9 +75,13 @@
                                     @foreach($prs as $pr)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $pr->pr_no }}</td>
-                                            <td>{{ $pr->date }}</td>
-                                            <td>{{ $pr->vessel }}</td>
+                                            <td>
+                                                <strong>PR No.:</strong> {{ $pr->pr_no }}
+                                                <br>
+                                                <strong>Date:</strong> {{ $pr->date }}
+                                                <br>
+                                                <strong>Vessel:</strong> {{ $pr->vessel }}
+                                            </td>
                                             <td>{{ $pr->item_req }}</td>
                                             <td>
                                                 @if($pr->confirmed_status === 'PENDING')
@@ -90,12 +92,6 @@
                                                     <span class="badge bg-secondary">{{ $pr->confirmed_status }}</span>
                                                 @endif
 
-                                                {{-- Confirmed By --}}
-                                                @if(!empty($pr->confirmedBy))
-                                                    <div class="text-muted small mt-1">
-                                                        Confirmed By: {{ $pr->confirmedBy->name }}
-                                                    </div>
-                                                @endif
                                             </td>
                                             <td>
                                                 @if($pr->approved_status === 'PENDING')
@@ -106,12 +102,6 @@
                                                     <span class="badge bg-secondary">{{ $pr->approved_status }}</span>
                                                 @endif
 
-                                                {{-- Confirmed By --}}
-                                                @if(!empty($pr->approvedBy))
-                                                    <div class="text-muted small mt-1">
-                                                        Approved By: {{ $pr->approvedBy->name }}
-                                                    </div>
-                                                @endif
                                             </td>
                                             @php
                                                 $statusColors = [
@@ -135,7 +125,7 @@
                                                     </button>
                                                     <ul class="dropdown-menu" aria-labelledby="actionDropdown">
                                                         <li>
-                                                            <a href="{{--{{ route('pr.confirm.show', $pr) }}--}}" class="dropdown-item" type="button">View</a>
+                                                            <a href="{{ route('pr.approve.show', $pr) }}" class="dropdown-item" type="button">View</a>
                                                         </li>
                                                         <li>
                                                             <a href="{{ route('pr.approve.edit', $pr) }}" class="dropdown-item" type="button">Update</a>

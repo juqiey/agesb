@@ -148,7 +148,7 @@
 
                                             {{-- Line 3: EE File Upload --}}
                                             <div class="row g-2 mb-3">
-                                                <div class="col-12">
+                                                <div class="col-12" id="fileWrapper">
                                                     <label class="form-label">EE: Miscellaneous (Photo/Sketch/Drawing,
                                                         etc)</label>
                                                     <input id="ee" type="file" class="form-control"
@@ -226,60 +226,84 @@
             let itemIndex = 0;
             let itemsTable;
 
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
+
                 itemsTable = $('#itemsTable').DataTable();
 
-                document.getElementById('confirmItem').addEventListener('click', function() {
-                    const item = {
-                        aa: document.getElementById('aa').value,
-                        bb: document.getElementById('bb').value,
-                        cc: document.getElementById('cc').value,
-                        dd: document.getElementById('dd').value,
-                        remark: document.getElementById('remark').value,
-                        ee: document.getElementById('ee').files[0] ? document.getElementById('ee').files[0]
-                            .name : '',
-                    };
+                document.getElementById('confirmItem').addEventListener('click', function () {
 
-                    if (!item.aa) {
+                    const aa = document.getElementById('aa').value.trim();
+                    const bb = document.getElementById('bb').value.trim();
+                    const cc = document.getElementById('cc').value.trim();
+                    const dd = document.getElementById('dd').value.trim();
+                    const remark = document.getElementById('remark').value.trim();
+                    const fileInput = document.getElementById('ee');
+
+                    if (!aa) {
                         alert('AA: Description is required');
                         return;
                     }
 
-                    // Handle file
-                    let fileInput = document.getElementById('ee');
-                    let clonedInput = fileInput.cloneNode();
-                    clonedInput.id = `ee_${itemIndex}`;
-                    clonedInput.name = `items[${itemIndex}][ee]`;
-                    clonedInput.style.display = 'none';
+                    // =========================
+                    // HANDLE FILE (MOVE INPUT)
+                    // =========================
+                    let fileName = '';
 
-                    if (fileInput.files[0]) {
-                        clonedInput.files = fileInput.files;
-                        document.querySelector('form').appendChild(clonedInput);
+                    if (fileInput.files.length > 0) {
+                        fileName = fileInput.files[0].name;
+
+                        fileInput.name = `items[${itemIndex}][ee]`;
+                        fileInput.style.display = 'none';
+                        document.querySelector('form').appendChild(fileInput);
                     }
 
-                    // Add row
+                    // =========================
+                    // ADD ROW TO TABLE
+                    // =========================
                     itemsTable.row.add([
-                        `${item.aa}<input type="hidden" name="items[${itemIndex}][aa]" value="${item.aa}">`,
-                        `${item.bb}<input type="hidden" name="items[${itemIndex}][bb]" value="${item.bb}">`,
-                        `${item.cc}<input type="hidden" name="items[${itemIndex}][cc]" value="${item.cc}">`,
-                        `${item.dd}<input type="hidden" name="items[${itemIndex}][dd]" value="${item.dd}">`,
-                        `${item.remark}<input type="hidden" name="items[${itemIndex}][remark]" value="${item.remark}">`,
-                        `${item.ee}`,
-                        `<button type="button" class="btn btn-danger btn-sm removeRow">&times;</button>`
+                        `${aa}<input type="hidden" name="items[${itemIndex}][aa]" value="${aa}">`,
+                        `${bb}<input type="hidden" name="items[${itemIndex}][bb]" value="${bb}">`,
+                        `${cc}<input type="hidden" name="items[${itemIndex}][cc]" value="${cc}">`,
+                        `${dd}<input type="hidden" name="items[${itemIndex}][dd]" value="${dd}">`,
+                        `${remark}<input type="hidden" name="items[${itemIndex}][remark]" value="${remark}">`,
+                        fileName || '-',
+                        `<button type="button" class="btn btn-danger btn-sm removeRow" data-index="${itemIndex}">&times;</button>`
                     ]).draw(false);
 
                     itemIndex++;
 
-                    // Reset inputs
+                    // =========================
+                    // RESET INPUTS
+                    // =========================
                     document.getElementById('aa').value = '';
                     document.getElementById('bb').value = '';
                     document.getElementById('cc').value = '';
                     document.getElementById('dd').value = '';
                     document.getElementById('remark').value = '';
-                    fileInput.value = '';
+
+                    // Create a NEW file input for next item
+                    let newFileInput = document.createElement('input');
+                    newFileInput.type = 'file';
+                    newFileInput.id = 'ee';
+                    newFileInput.className = 'form-control';
+
+                    document.getElementById('fileWrapper').innerHTML = '';
+                    document.getElementById('fileWrapper').appendChild(newFileInput);
                 });
 
-                $('#itemsTable tbody').on('click', '.removeRow', function() {
+                // =========================
+                // REMOVE ROW + FILE INPUT
+                // =========================
+                $('#itemsTable tbody').on('click', '.removeRow', function () {
+
+                    const index = $(this).data('index');
+
+                    // Remove hidden file input if exists
+                    const fileInput = document.querySelector(`input[name="items[${index}][ee]"]`);
+                    if (fileInput) {
+                        fileInput.remove();
+                    }
+
                     itemsTable.row($(this).parents('tr')).remove().draw();
                 });
             });

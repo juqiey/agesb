@@ -63,14 +63,10 @@
                                     <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>SSR No.</th>
-                                        <th>Date</th>
-                                        <th>Vessel</th>
-                                        <th>Item</th>
-                                        <th>Location</th>
+                                        <th>SSR Info</th>
                                         <th>Verified</th>
                                         <th>Approved</th>
-                                        <th>Procurement Approved</th>
+                                        <th>Procurement</th>
                                         <th>Status</th>
                                         <th>Action</th>
                                     </tr>
@@ -79,11 +75,17 @@
                                     @foreach($ssrs as $ssr)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $ssr->ssr_no }}</td>
-                                            <td>{{ $ssr->date }}</td>
-                                            <td>{{ $ssr->vessel }}</td>
-                                            <td>{{ $ssr->item }}</td>
-                                            <td>{{ $ssr->location }}</td>
+                                            <td>
+                                                <strong>SSR No.</strong>: {{ $ssr->ssr_no }}
+                                                <br>
+                                                <strong>Date</strong>: {{ $ssr->date->format('Y-m-d') }}
+                                                <br>
+                                                <strong>Vessel</strong>: {{ $ssr->vessel }}
+                                                <br>
+                                                <strong>Location</strong>: {{ $ssr->location }}
+                                                <br>
+                                                <strong>Item</strong>: {{ $ssr->item }}
+                                            </td>
                                             <td>
                                                 @if($ssr->verified_status === 'PENDING')
                                                     <span class="badge bg-warning text-white">PENDING</span>

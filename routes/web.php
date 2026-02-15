@@ -34,35 +34,6 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('dashboard', [HomeController::class, 'home'])->name('dashboard');
 
-	/*Route::get('billing', function () {
-		return view('billing');
-	})->name('billing');
-
-	Route::get('profile', function () {
-		return view('profile');
-	})->name('profile');
-
-
-	Route::get('user-management', function () {
-		return view('laravel-examples/user-management');
-	})->name('user-management');
-
-	Route::get('tables', function () {
-		return view('tables');
-	})->name('tables');
-
-    Route::get('virtual-reality', function () {
-		return view('virtual-reality');
-	})->name('virtual-reality');
-
-    Route::get('static-sign-in', function () {
-		return view('static-sign-in');
-	})->name('sign-in');
-
-    Route::get('static-sign-up', function () {
-		return view('static-sign-up');
-	})->name('sign-up');*/
-
     Route::get('/logout', [SessionsController::class, 'destroy']);
 	Route::get('/user-profile', [InfoUserController::class, 'create']);
 	Route::post('/user-profile', [InfoUserController::class, 'store']);
@@ -71,7 +42,7 @@ Route::group(['middleware' => 'auth'], function () {
 	})->name('sign-up');
 
     //AGESB Routes start here
-    Route::prefix('ssr')->name('ssr.')->group(function(){
+    Route::middleware(['auth', 'can:operation'])->prefix('ssr')->name('ssr.')->group(function(){
         //SSR->Request routes here
         Route::get('/request',[SsrController::class,'index'])->name('request.index');
         Route::get('/request/create',[SsrController::class,'create'])->name('request.create');
@@ -81,16 +52,16 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/request/show/{ssr}', [SsrController::class, 'show'])->name('request.show');
 
         //SSR->Verification routes here
-        Route::get('/verify',[SsrController::class, 'verifyIndex'])->name('verify.index');
-        Route::get('/verify/edit/{ssr}', [SsrController::class, 'verifyEdit'])->name('verify.edit');
-        Route::put('/verify/update/{ssr}', [SsrController::class, 'verifyUpdate'])->name('verify.update');
-        Route::get('/verify/show/{ssr}', [SsrController::class, 'verifyShow'])->name('verify.show');
+        Route::get('/verify',[SsrController::class, 'verifyIndex'])->name('verify.index')->middleware(['auth', 'can:confirm-action']);
+        Route::get('/verify/edit/{ssr}', [SsrController::class, 'verifyEdit'])->name('verify.edit')->middleware(['auth', 'can:confirm-action']);
+        Route::put('/verify/update/{ssr}', [SsrController::class, 'verifyUpdate'])->name('verify.update')->middleware(['auth', 'can:confirm-action']);
+        Route::get('/verify/show/{ssr}', [SsrController::class, 'verifyShow'])->name('verify.show')->middleware(['auth', 'can:confirm-action']);
 
         //SSR->Approval routes here
-        Route::get('/approve',[SsrController::class, 'approveIndex'])->name('approve.index');
-        Route::get('/approve/edit/{ssr}', [SsrController::class, 'approveEdit'])->name('approve.edit');
-        Route::put('/approve/update/{ssr}', [SsrController::class, 'approveUpdate'])->name('approve.update');
-        Route::get('/approve/show/{ssr}', [SsrController::class, 'approveShow'])->name('approve.show');
+        Route::get('/approve',[SsrController::class, 'approveIndex'])->name('approve.index')->middleware(['auth', 'can:ceo-approve']);
+        Route::get('/approve/edit/{ssr}', [SsrController::class, 'approveEdit'])->name('approve.edit')->middleware(['auth', 'can:ceo-approve']);
+        Route::put('/approve/update/{ssr}', [SsrController::class, 'approveUpdate'])->name('approve.update')->middleware(['auth', 'can:ceo-approve']);
+        Route::get('/approve/show/{ssr}', [SsrController::class, 'approveShow'])->name('approve.show')->middleware(['auth', 'can:ceo-approve']);
 
         //SSR->Export pdf routes here
         Route::get('/report/export/{ssr}',[SsrController::class, 'exportReport'])->name('report.export');
@@ -98,7 +69,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/report/summary', [SsrController::class, 'exportSummary'])->name('report.summary');
     });
 
-    Route::prefix('ssa')->name('ssa.')->group(function(){
+    Route::middleware(['auth', 'can:operation'])->prefix('ssa')->name('ssa.')->group(function(){
         //SSA->Request routes here
         Route::get('/request',[SsaController::class,'index'])->name('request.index');
         Route::get('/request/create',[SsaController::class,'create'])->name('request.create');
@@ -107,18 +78,20 @@ Route::group(['middleware' => 'auth'], function () {
         Route::put('/request/update/{ssa}',[SsaController::class, 'update'])->name('request.update');
         Route::get('/request/show/{ssa}', [SsaController::class, 'show'])->name('request.show');
         Route::delete('/destroy/{ssa}', [SsaController::class, 'destroy'])->name('destroy');
+        Route::get('/request/close/{ssa}', [SsaController::class, 'close'])->name('request.close');
+        Route::put('/request/close/{ssa}', [SsaController::class, 'closeSsa'])->name('request.service');
 
         //SSA->Verification routes here
-        Route::get('/verify',[SsaController::class, 'verifyIndex'])->name('verify.index');
-        Route::get('/verify/edit/{ssa}', [SsaController::class, 'verifyEdit'])->name('verify.edit');
-        Route::put('/verify/update/{ssa}', [SsaController::class, 'verifyUpdate'])->name('verify.update');
-        Route::get('/verify/show/{ssa}', [SsaController::class, 'verifyShow'])->name('verify.show');
+        Route::get('/verify',[SsaController::class, 'verifyIndex'])->name('verify.index')->middleware(['auth', 'can:confirm-action']);
+        Route::get('/verify/edit/{ssa}', [SsaController::class, 'verifyEdit'])->name('verify.edit')->middleware(['auth', 'can:confirm-action']);
+        Route::put('/verify/update/{ssa}', [SsaController::class, 'verifyUpdate'])->name('verify.update')->middleware(['auth', 'can:confirm-action']);
+        Route::get('/verify/show/{ssa}', [SsaController::class, 'verifyShow'])->name('verify.show')->middleware(['auth', 'can:confirm-action']);
 
         //SSA->Approval routes here
-        Route::get('/approve',[SsaController::class, 'approveIndex'])->name('approve.index');
+        Route::get('/approve',[SsaController::class, 'approveIndex'])->name('approve.index')->middleware(['auth', 'can:ceo-approve']);
         Route::get('/approve/edit/{ssa}', [SsaController::class, 'approveEdit'])->name('approve.edit');
-        Route::put('/approve/update/{ssa}', [SsaController::class, 'approveUpdate'])->name('approve.update');
-        Route::get('/approve/show/{ssa}', [SsaController::class, 'approveShow'])->name('approve.show');
+        Route::put('/approve/update/{ssa}', [SsaController::class, 'approveUpdate'])->name('approve.update')->middleware(['auth', 'can:ceo-approve']);
+        Route::get('/approve/show/{ssa}', [SsaController::class, 'approveShow'])->name('approve.show')->middleware(['auth', 'can:ceo-approve']);
 
         //SSA->Export pdf routes here
         Route::get('/report/export/{ssa}',[SsaController::class, 'exportReport'])->name('report.export');
@@ -126,7 +99,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/report/summary', [SsaController::class, 'exportSummary'])->name('report.summary');
     });
 
-    Route::prefix('pr')->name('pr.')->group(function(){
+    Route::middleware(['auth', 'can:operation'])->prefix('pr')->name('pr.')->group(function(){
         //PR->Request routes here
         Route::get('/request', [PurchaseRequestController::class, 'index'])->name('request.index');
         Route::get('/request/create',[PurchaseRequestController::class, 'create'])->name('request.create');
@@ -137,16 +110,17 @@ Route::group(['middleware' => 'auth'], function () {
 
 
         //PR->Confirm routes here
-        Route::get('/confirm', [PurchaseRequestController::class, 'confirmIndex'])->name('confirm.index');
-        Route::get('/confirm/edit/{pr}', [PurchaseRequestController::class, 'confirmEdit'])->name('confirm.edit');
-        Route::put('/confirm/update/{pr}', [PurchaseRequestController::class, 'confirmUpdate'])->name('confirm.update');
-        Route::get('/confirm/show/{pr}', [PurchaseRequestController::class, 'show'])->name('confirm.show');
+        Route::get('/confirm', [PurchaseRequestController::class, 'confirmIndex'])->name('confirm.index')->middleware(['auth', 'can:confirm-action']);
+        Route::get('/confirm/edit/{pr}', [PurchaseRequestController::class, 'confirmEdit'])->name('confirm.edit')->middleware(['auth', 'can:confirm-action']);
+        Route::put('/confirm/update/{pr}', [PurchaseRequestController::class, 'confirmUpdate'])->name('confirm.update')->middleware(['auth', 'can:confirm-action']);
+        Route::get('/confirm/show/{pr}', [PurchaseRequestController::class, 'show'])->name('confirm.show')->middleware(['auth', 'can:confirm-action']);
 
 
         //PR->Approve routes here
-        Route::get('/approve', [PurchaseRequestController::class, 'approveIndex'])->name('approve.index');
-        Route::get('/approve/edit/{pr}', [PurchaseRequestController::class, 'approveEdit'])->name('approve.edit');
-        Route::put('/approve/update/{pr}', [PurchaseRequestController::class, 'approveUpdate'])->name('approve.update');
+        Route::get('/approve', [PurchaseRequestController::class, 'approveIndex'])->name('approve.index')->middleware(['auth', 'can:ceo-approve']);
+        Route::get('/approve/edit/{pr}', [PurchaseRequestController::class, 'approveEdit'])->name('approve.edit')->middleware(['auth', 'can:ceo-approve']);
+        Route::put('/approve/update/{pr}', [PurchaseRequestController::class, 'approveUpdate'])->name('approve.update')->middleware(['auth', 'can:ceo-approve']);
+        Route::get('/approve/show/{pr}', [PurchaseRequestController::class, 'show'])->name('approve.show')->middleware(['auth', 'can:ceo-approve']);
 
         //PR->Report routes here
         Route::get('/report', [PurchaseRequestController::class, 'reportIndex'])->name('report.index');
@@ -154,7 +128,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/report/summary', [PurchaseRequestController::class, 'exportSummary'])->name('report.summary');
     });
 
-    Route::prefix('pro')->name('pro.')->group(function(){
+    Route::middleware(['auth', 'can:procurement'])->prefix('pro')->name('pro.')->group(function(){
         //PR Routes here
         Route::get('/pr', [PurchaseRequestController::class, 'proIndex'])->name('pr.index');
         Route::get('/pr/show/{pr}', [PurchaseRequestController::class, 'show'])->name('pr.show');

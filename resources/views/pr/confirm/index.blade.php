@@ -64,8 +64,6 @@
                                         <tr>
                                             <th>#</th>
                                             <th>PR No.</th>
-                                            <th>Date</th>
-                                            <th>Vessel</th>
                                             <th>Category</th>
                                             <th>Status</th>
                                             <th>Action</th>
@@ -75,9 +73,13 @@
                                     @foreach($prs as $pr)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $pr->pr_no }}</td>
-                                            <td>{{ $pr->date }}</td>
-                                            <td>{{ $pr->vessel }}</td>
+                                            <td>
+                                                <strong>PR No.:</strong> {{ $pr->pr_no }}
+                                                <br>
+                                                <strong>Date:</strong> {{ $pr->date }}
+                                                <br>
+                                                <strong>Vessel:</strong> {{ $pr->vessel }}
+                                            </td>
                                             <td>{{ $pr->item_req }}</td>
                                             @php
                                                 $statusColors = [

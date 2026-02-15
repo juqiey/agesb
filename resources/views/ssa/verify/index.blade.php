@@ -51,14 +51,10 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>SSA No.</th>
-                                            <th>Date</th>
-                                            <th>Vessel</th>
-                                            <th>Location</th>
-                                            <th>Department</th>
+                                            <th>SSA Info</th>
                                             <th>Verified</th>
                                             <th>Approved</th>
-                                            <th>Procurement Approved</th>
+                                            <th>Procurement</th>
                                             <th>Status</th>
                                             <th>Action</th>
                                         </tr>
@@ -67,11 +63,17 @@
                                         @foreach ($ssas as $ssa)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $ssa->ssa_no }}</td>
-                                                <td>{{ $ssa->date->format('Y-m-d') }}</td>
-                                                <td>{{ $ssa->vessel }}</td>
-                                                <td>{{ $ssa->location }}</td>
-                                                <td>{{ $ssa->department }}</td>
+                                                <td>
+                                                    <strong>SSA No.</strong>: {{ $ssa->ssa_no }}
+                                                    <br>
+                                                    <strong>Date</strong>: {{ $ssa->date->format('Y-m-d') }}
+                                                    <br>
+                                                    <strong>Vessel</strong>: {{ $ssa->vessel }}
+                                                    <br>
+                                                    <strong>Location</strong>: {{ $ssa->location }}
+                                                    <br>
+                                                    <strong>Department</strong>: {{ $ssa->department }}
+                                                </td>
                                                 <td>
                                                     @if ($ssa->verified_status === 'PENDING')
                                                         <span class="badge bg-warning text-white">PENDING</span>
